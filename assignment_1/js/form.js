@@ -23,7 +23,7 @@ $(document).ready(() => {
         // get form values and save to object
         let firstName = $('#firstname').val();
         let lastName = $('#lastname').val();
-        let email = $('#lastname').val();
+        let email = $('#email').val();
         let newBooking = {
             'first': firstName,
             'last': lastName,
