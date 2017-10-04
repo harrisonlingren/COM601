@@ -27,7 +27,9 @@
                 <input type="text" class="search-input" id="search-input" placeholder="Type a booking reference ID...">
                 <button type="submit" class="search-btn" id="search-btn"><i class="material-icons">search</i></button>
             </div>
-            <div class="section-footer">Don't have an ID? <a href="#" id="booking-link">Start a new booking now!</a></div>
+            <div class="section-footer">
+                Don't have an ID? <a href="#" class="booking-link">Start a new booking now!</a>
+            </div>
         </div>
 
         <div class="booking-form">
@@ -36,14 +38,29 @@
                 <p>Fill out the fields below to book a new accomodation</p>
             </div>
             <div class="section-wrapper">
-                <form>
-                    First name: <input type="text" name="firstname" id="firstname" placeholder="First..."><br>
-                    Last name:  <input type="text" name="lastname" id="lastname" placeholder="Last..."><br>
-                    Email: <input type="email" name="email" id="email" placeholder="example@gmail.com..."><br>
-                    <button type="submit" id="submit-btn">Reserve now</button>
-                </form> 
+                First name: <input type="text" name="firstname" id="firstname" placeholder="First..."><br>
+                Last name:  <input type="text" name="lastname" id="lastname" placeholder="Last..."><br>
+                Email: <input type="email" name="email" id="email" placeholder="example@gmail.com..."><br>
+                <button id="submit-btn">Reserve now</button>
             </div>
-            <div class="section-footer">Already have accomodations? <a href="#" id="search-link">Look up your booking here!</a></div>
+            <div class="section-footer">
+                Already have accomodations? <a href="#" class="search-link">Look up your booking here!</a>
+            </div>
+        </div>
+
+        <div class="success-page">
+            <div class="section-header">
+                <h3>Thank you!</h3>
+                <p>Your accomodations have been booked successfully. Check out the details below:</p>
+            </div>
+            <div class="section-wrapper">
+                <p id="booked-id">Your booking ID: </p>
+                <p id="booked-name">Registered name: </p>
+                <p id="booked-email">Email address: </p>
+            </div>
+            <div class="section-footer">
+                Want to book a new accomodation? <a href="#" class="booking-link">Let's start over!</a>
+            </div>
         </div>
     </div>
 
