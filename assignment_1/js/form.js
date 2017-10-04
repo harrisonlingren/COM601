@@ -2,13 +2,28 @@
 let apiString = 'https://com601-assign1.herokuapp.com/api';
 
 $(document).ready(() => {
+    // switch view to search
+    $('#search-link').click(() => {
+        $('.booking-form').hide();
+        $('.search-form').show();
+    })
+
+    // switch view to booking form
+    $('#booking-link').click(() => {
+        $('.booking-form').show();
+        $('.search-form').hide();
+    })
+
+    // hide booking form
+    $('.booking-form').hide();
+
     // add click handler for submit button
     let submitBtn = $('#submit-btn');
     submitBtn.click(() => {
         // get form values and save to object
-        let firstName = $('#firstname').value;
-        let lastName = $('#lastname').value;
-        let email = $('#lastname').value;
+        let firstName = $('#firstname').val();
+        let lastName = $('#lastname').val();
+        let email = $('#lastname').val();
         let newBooking = {
             'first': firstName,
             'last': lastName,
@@ -28,47 +43,51 @@ $(document).ready(() => {
     // add click handler for search button
     let searchBtn = $('#search-btn');
     searchBtn.click(() => {
-        let searchId = $('#search-input').value;
+        let searchId = $('#search-input').val();
         if (!searchId) {
             // TODO: replace this with tooltip
-            console.log("search ID missing!");
+            console.log("search ID missing!", searchId);
         } else {
             findByRef(searchId);
         }
     });
-
-    // switch view to search
-    let searchLink = $('#search-link')
-    searchLink.click(() => {
-        $('.booking-form').hide();
-        $('.search-form').show();
-    })
-
-    // switch view to booking form
-    let searchLink = $('#booking-link')
-    searchLink.click(() => {
-        $('.booking-form').show();
-        $('.search-form').hide();
-    })
 });
 
 // handle submit to create new booking
 // TODO: handle updating booking
 function submitForm(booking) {
-    $.post(apiString+'/create', {
+
+    let postData = {
         'first': booking.first,
         'last': booking.last,
         'email': booking.email
-    }, (result) => {
+    };
+
+    let query = apiString + '/create';
+    console.log('querying: %s', query);
+    /* $.post(query, postData, (result) => {
         // TODO: change this to display better
         console.log(result);
+    }); */
+
+    $.ajax({
+        url: query,
+        type: 'POST',
+        data: postData,
+        success: (res, status) => {
+            console.log(res, status);
+        },
+        error: (res) => {
+            console.log(res.status, res.statusText);
+        }
     });
 }
 
 function findByRef(id) {
     let query = apiString + '/booking/' + id;
-    $.get(query, (result) => {
+    console.log('querying: %s', query);
+    $.getJSON(query, (result) => {
         // TODO: change this to display better
         console.log(result);
-    })
+    });
 }
