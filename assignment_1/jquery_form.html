@@ -6,13 +6,39 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Lingren Assignment 1</title>
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script src="js/form.js"></script>
 </head>
 <body>
-    
     <h2>Check back for the actual assignment in about a week!</h2>
+
+    <div class="container">
+        <header>
+            <h2>Accomdations booking</h2>
+        </header>
+
+        <div class="search">
+            <div class="section-header">
+                <h3>Lookup previous booking</h3>
+                <p>Type in your booking reference ID below to locate your booking</p>
+            </div>
+            <div class="search-wrapper">
+                <input type="text" class="search-input" placeholder="Type a booking reference ID...">
+                <button type="submit" class="search-button"><i class="material-icons">search</i></button>
+            </div>
+        </div>
+
+        <div class="booking-form">
+            <form>
+                First name: <input type="text" name="firstname" placeholder="First..."><br>
+                Last name:  <input type="text" name="lastname" placeholder="Last..."><br>
+                Email: <input type="email" name="lastname" placeholder="example@gmail.com..."><br>
+                <button type="submit" value="Reserve now">
+            </form>
+        </div>
+    </div>
 
 </body>
 </html>
