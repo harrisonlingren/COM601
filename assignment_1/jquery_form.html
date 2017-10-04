@@ -12,31 +12,38 @@
     <script src="js/form.js"></script>
 </head>
 <body>
-    <h2>Check back for the actual assignment in about a week!</h2>
-
+    <!-- <h2>Check back for the actual assignment in about a week!</h2> -->
     <div class="container">
         <header>
             <h2>Accomdations booking</h2>
         </header>
 
-        <div class="search">
+        <div class="search-form">
             <div class="section-header">
                 <h3>Lookup previous booking</h3>
                 <p>Type in your booking reference ID below to locate your booking</p>
             </div>
-            <div class="search-wrapper">
-                <input type="text" class="search-input" placeholder="Type a booking reference ID...">
-                <button type="submit" class="search-button"><i class="material-icons">search</i></button>
+            <div class="section-wrapper">
+                <input type="text" class="search-input" id="search-input" placeholder="Type a booking reference ID...">
+                <button type="submit" class="search-btn" id="search-btn"><i class="material-icons">search</i></button>
             </div>
+            <div class="section-footer">Don't have an ID? <a href="#" id="booking-link"></a>Start a new booking now!</div>
         </div>
 
         <div class="booking-form">
-            <form>
-                First name: <input type="text" name="firstname" placeholder="First..."><br>
-                Last name:  <input type="text" name="lastname" placeholder="Last..."><br>
-                Email: <input type="email" name="lastname" placeholder="example@gmail.com..."><br>
-                <button type="submit">Reserve now</button>
-            </form>
+            <div class="section-header">
+                <h3>Create a new booking</h3>
+                <p>Fill out the fields below to book a new accomodation</p>
+            </div>
+            <div class="section-wrapper">
+                <form>
+                    First name: <input type="text" name="firstname" id="firstname" placeholder="First..."><br>
+                    Last name:  <input type="text" name="lastname" id="lastname" placeholder="Last..."><br>
+                    Email: <input type="email" name="email" id="email" placeholder="example@gmail.com..."><br>
+                    <button type="submit" id="submit-btn">Reserve now</button>
+                </form> 
+            </div>
+            <div class="section-footer">Already have accomodations? <a href="#" id="search-link">Look up your booking here!</a></div>
         </div>
     </div>
 
