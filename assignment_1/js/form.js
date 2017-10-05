@@ -72,7 +72,7 @@ function submitForm(booking) {
         console.log(result, status, resp.statusText, resp.status);
         if (resp.status == 201) {
             // process success page
-            $('#booked-id').append(result.data.id);
+            $('#booked-id').append(result.data.book_id);
             $('#booked-name').append(result.data.first + ' ' + result.data.last);
             $('#booked-email').append(result.data.email);
 
