@@ -9,6 +9,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css" type="text/css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="http://spin.js.org/spin.min.js"></script>
     <script src="js/form.js"></script>
 </head>
 <body>
@@ -17,6 +18,8 @@
         <header>
             <h2>Accomdations booking</h2>
         </header>
+
+        <div class="ajax-spinner"></div>
 
         <div class="search-form">
             <div class="section-header">
@@ -30,7 +33,7 @@
                 </div>
             </div>
             <div class="section-footer">
-                Don't have an ID? <a href="#" class="booking-link">Start a new booking now!</a>
+                <p>Don't have an ID? <a href="#" class="booking-link">Start a new booking now!</a></p>
             </div>
         </div>
 
@@ -40,13 +43,15 @@
                 <p>Fill out the fields below to book a new accomodation</p>
             </div>
             <div class="section-wrapper">
-                First name: <input type="text" name="firstname" id="firstname" placeholder="First..."><br>
-                Last name:  <input type="text" name="lastname" id="lastname" placeholder="Last..."><br>
-                Email: <input type="email" name="email" id="email" placeholder="example@gmail.com..."><br>
-                <button id="submit-btn">Reserve now</button>
+                <form>
+                    <label for="firstname">First name:</label><input required type="text" name="firstname" id="firstname" placeholder="First..."><br>
+                    <label for="lastname">Last name: </label><input required type="text" name="lastname" id="lastname" placeholder="Last..."><br>
+                    <label for="email">Email:</label><input required type="email" name="email" id="email" placeholder="example@gmail.com..."><br><br>
+                    <button id="submit-btn">Reserve now</button>
+                </form>
             </div>
             <div class="section-footer">
-                Already have accomodations? <a href="#" class="search-link">Look up your booking here!</a>
+                <p>Already have accomodations? <a href="#" class="search-link">Look up your booking here!</a></p>
             </div>
         </div>
 
@@ -61,7 +66,7 @@
                 <p id="booked-email">Email address: </p>
             </div>
             <div class="section-footer">
-                Want to book a new accomodation? <a href="#" class="booking-link">Let's start over!</a>
+                <p>Want to book a new accomodation? <a href="#" class="booking-link">Let's start over!</a></p>
             </div>
         </div>
     </div>

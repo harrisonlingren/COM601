@@ -10,14 +10,17 @@ body {
 
 .section-header {
     display: block;
+    margin-top: 20px;
 }
 
 .section-wrapper {
     display: block;
+    margin-bottom: 10px;
 }
 
 .section-footer {
     display: block;
+    margin-bottom: 10px;
 }
 
 .section-wrapper .search {
@@ -25,7 +28,7 @@ body {
 }
 
 .search {
-    width: 33%;
+    width: 350px;
     position: relative;
 }
 
