@@ -21,38 +21,62 @@ let apiString = 'https://com601-assign1.herokuapp.com/api';
 
 // AJAX for creating new bookings
 // TODO: handle updating booking
-function submitForm(booking) {
-    let query = apiString + '/create';
+function submitForm(booking, oldId) {
+    // flag for updating or creating
+    let updateFlag = (oldId == "") ? false : true;
+    console.log('update? ' + updateFlag);
     let postData = {
         'first': booking.first,
         'last': booking.last,
         'email': booking.email
     };
 
-    // DEBUG: print AJAX query
-    //console.log('querying: %s', query);
+    let query = '';
+    if (updateFlag) {
+         // update existing record
+         query = apiString + '/booking/' + oldId;
+         $.ajax({
+             url: query,
+             type: 'PUT',
+             data: postData,
+             success: handleSuccess
+         });
+    } else {
+        // create new booking record
+        query = apiString + '/create';
+        $.post(query, postData, handleSuccess);
+    }
+     // DEBUG: print AJAX query
+     console.log('querying: %s', query);
+    
+}
 
-    $.post(query, postData, (result, status, resp) => {
-        // TODO: change this to display better
-        // DEBUG: print AJAX result status and data
-        //console.log(result, status, resp.statusText, resp.status);
-        if (resp.status == 201) {
-            // process success page
-            $('#booked-id').append(result.data.book_id);
-            $('#booked-name').append(result.data.first + ' ' + result.data.last);
-            $('#booked-email').append(result.data.email);
+function handleSuccess(result, status, resp) {
+    // TODO: change this to display better
+    // DEBUG: print AJAX result status and data
+    console.log(result, status, resp.statusText, resp.status);
+    if (resp.status == 201) {
+        // process success page
+        $('#booked-id').text('Your booking ID: ' + result.data.book_id)
+        $('#booked-name').text('Registered name: ' + result.data.first + ' ' + result.data.last);
+        $('#booked-email').text('Email address: ' + result.data.email);
 
-            $('.booking-form').hide();
-            $('.success-page').show();
-        } else {
-            // error tooltips
-            if ($('#errormsg').length == 0) {
-                $('.booking-form .section-wrapper').append('<p id="errormsg">Looks like there was an error, %s %s! Try again.</p>', resp.status, resp.statusText);
-            } else {
-                // TODO: make this all better
-            }
+        // set message if update
+        if ($('#found-id').val() != "") {
+            $('.success-page > .section-header > p').text("Your accomodations have been updated successfully. Check out the details below:");
+            $('#found-id').val('');
         }
-    });
+
+        $('.booking-form').hide();
+        $('.success-page').show();
+    } else {
+        // error tooltips
+        if ($('#errormsg').length == 0) {
+            $('.booking-form .section-wrapper').append('<p id="errormsg">Looks like there was an error, %s %s! Try again.</p>', resp.status, resp.statusText);
+        } else {
+            // TODO: make this all better
+        }
+    }
 }
 
 // AJAX for finding booking
@@ -67,6 +91,18 @@ function findByRef(id) {
             $('#firstname').val(result.data.first);
             $('#lastname').val(result.data.last);
             $('#email').val(result.data.email);
+            $('#found-id').val(result.data.book_id);
+
+            // change header text and button text
+            $('.booking-form > .section-header > h3').text('Update your booking')
+            $('.booking-form > .section-header > p').text('We found your booking record, ' + result.data.first + '. Feel free to change any of the fields below if you need to update it.');
+            $('#submit-btn').text('Update booking');
+            $('.booking-form > .section-footer > p').html('Want to start over? <a href="#" class="search-link">Go back</a>');
+            $('.search-link').click(() => {
+                $('.booking-form').hide();
+                $('.search-form').show();
+            });
+            $('#search-input').val('');
 
             $('.booking-form').show();
             $('.search-form').hide();
@@ -103,6 +139,23 @@ $(document).ready(() => {
 
     // switch view to booking form
     $('.booking-link').click(() => {
+        // clear forms
+        $('#firstname').val('');
+        $('#lastname').val('');
+        $('#email').val('');
+        $('#search-input').val('');
+        $('#found-id').val('');
+
+        // reset text
+        $('#submit-btn').text('Reserve now');
+        $('.booking-form > .section-header > h3').text('Create a new booking');
+        $('.booking-form > .section-header > p').text('Fill out the fields below to book a new accomodation');
+        $('.booking-form > .section-footer > p').html('Already have accomodations? <a href="#" class="search-link">Look up your booking here!</a>');
+        $('.search-link').click(() => {
+            $('.booking-form').hide();
+            $('.search-form').show();
+        });
+
         $('.booking-form').show();
         $('.search-form').hide();
         $('.success-page').hide();
@@ -128,9 +181,11 @@ $(document).ready(() => {
             // DEBUG: log if form incomplete
             console.log("form values missing!");
         } else {
-            // pass to helper function
-            submitForm(newBooking)
-        }
+            // submit form with old ID, if found
+            let oldId = $('#found-id').val();
+            console.log('booking: ' , newBooking, oldId);
+            submitForm(newBooking, oldId);
+        }        
     });
 
     // add click handler for search button

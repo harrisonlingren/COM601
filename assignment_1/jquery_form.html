@@ -43,12 +43,10 @@
                 <p>Fill out the fields below to book a new accomodation</p>
             </div>
             <div class="section-wrapper">
-                <form>
                     <label for="firstname">First name:</label><input required type="text" name="firstname" id="firstname" placeholder="First..."><br>
                     <label for="lastname">Last name: </label><input required type="text" name="lastname" id="lastname" placeholder="Last..."><br>
                     <label for="email">Email:</label><input required type="email" name="email" id="email" placeholder="example@gmail.com..."><br><br>
                     <button id="submit-btn">Reserve now</button>
-                </form>
             </div>
             <div class="section-footer">
                 <p>Already have accomodations? <a href="#" class="search-link">Look up your booking here!</a></p>
@@ -70,6 +68,8 @@
             </div>
         </div>
     </div>
+
+    <input type="hidden" id="found-id" value=""/>
 
 </body>
 </html>
