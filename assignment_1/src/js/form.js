@@ -43,6 +43,7 @@ function submitForm(booking, oldId) {
     };
 
     let query = '';
+    showSpinner();
     if (updateFlag) {
          // update existing record
          query = apiString + '/booking/' + oldId;
@@ -57,9 +58,9 @@ function submitForm(booking, oldId) {
         query = apiString + '/create';
         $.post(query, postData, handleEditSuccess);
     }
-     // DEBUG: print AJAX query
-     console.log('querying: %s', query);
-    
+    hideSpinner();
+    // DEBUG: print AJAX query
+    //console.log('querying: %s', query);
 }
 
 // handle AJAX CREATE & UPDATE success
@@ -99,11 +100,12 @@ function handleEditSuccess(result, status, resp) {
 // AJAX for cancel booking
 function cancelBooking(id) {
     let query = apiString + '/booking/' + id;
+    showSpinner();
     $.ajax({
         url: query,
         type: 'DELETE',
         success: handleDeleteSuccess
-    });
+    }); hideSpinner();
 }
 
 // handle AJAX DELETE success
@@ -162,11 +164,13 @@ function findByRef(id) {
 
 // AJAX loading spinners, powered by spin.js
 function showSpinner() {
-    $('.ajax-spinner').show();
+    console.info('showing spinner...');
+    $('.spinner').show();
 }
 
 function hideSpinner() {
-    $('.ajax-spinner').hide();
+    console.info('hiding spinner...');
+    $('.spinner').hide();
 }
 
 // DOM manipulation after document is ready
@@ -175,7 +179,7 @@ $(document).ready(() => {
     $('.booking-form').hide();
     $('.cancel-prompt').hide();
     $('.success-page').hide();
-    $('.ajax-spinner').hide();
+    $('.spinner').hide();
 
     // switch view to search
     $('.search-link').click(() => {
@@ -238,41 +242,29 @@ $(document).ready(() => {
     // add click handler for search button
     let searchBtn = $('#search-btn');
     searchBtn.click(() => {
+        // TODO: replace this with tooltip
+        // DEBUG: log if form incomplete
         let searchId = $('#search-input').val();
-        if (!searchId) {
-            // TODO: replace this with tooltip
-            // DEBUG: log if form incomplete
-            console.log("search ID missing!", searchId);
-        } else {
-            // show spinner
-            showSpinner();
-            
-            // search with ID
-            findByRef(searchId);
-
-            // hide spinner
-            hideSpinner();
-        }
+        if (!searchId) { console.log("search ID missing!", searchId); } 
+        else { showSpinner();  findByRef(searchId);  hideSpinner(); }
     });
 
     // handle enter key on search
     let searchInp = $('#search-input');
     searchInp.keypress((e) => {
-        if (e.keyCode == 13) {
-            searchBtn.click();
-        }
+        if (e.keyCode == 13) { searchBtn.click(); }
     });
 
     // handle enter key on form
     let formInp = $('.booking-form > .section-wrapper > input');
     formInp.keypress((e) => {
-        if (e.keyCode == 13) {
-            submitBtn.click();
-        }
+        if (e.keyCode == 13) { submitBtn.click(); }
     });
 
     // set up AJAX spinner element
     let opts = { lines: 9, length: 34, width: 6, radius: 24, scale: 1, corners: 0.2, color: '#000', opacity: 0.25, rotate: 0, direction: 1, speed: 0.8, trail: 25, fps: 20, zIndex: 2e9, className: 'spinner', top: '50%', left: '50%', shadow: false, hwaccel: true, position: 'absolute' }
-    let target = $('.ajax-spinner');
-    let spinner = new Spinner(opts).spin(target);
+    let target = $('.container');
+    let s = new Spinner(opts).spin();
+    target.append(s.el);
+    hideSpinner();
 });
