@@ -39,19 +39,20 @@ function submitForm(booking, oldId) {
              url: query,
              type: 'PUT',
              data: postData,
-             success: handleSuccess
+             success: handleEditSuccess
          });
     } else {
         // create new booking record
         query = apiString + '/create';
-        $.post(query, postData, handleSuccess);
+        $.post(query, postData, handleEditSuccess);
     }
      // DEBUG: print AJAX query
      console.log('querying: %s', query);
     
 }
 
-function handleSuccess(result, status, resp) {
+// handle AJAX CREATE & UPDATE success
+function handleEditSuccess(result, status, resp) {
     // TODO: change this to display better
     // DEBUG: print AJAX result status and data
     console.log(result, status, resp.statusText, resp.status);
@@ -79,6 +80,22 @@ function handleSuccess(result, status, resp) {
     }
 }
 
+// AJAX for cancel booking
+function cancelBooking(id) {
+    let query = apiString + '/booking/' + id;
+    $.ajax({
+        url: query,
+        type: 'DELETE',
+        success: handleDeleteSuccess(id)
+    });
+}
+
+// handle AJAX DELETE success
+function handleDeleteSuccess(id) {
+    $('.success-page > .section-header > h3').text = 'Cancelled reservation';
+    $('.success-page > .section-header > p').text = "Your booking id ' + id + ' has been cancelled. We're sorry to see you go!";
+}
+
 // AJAX for finding booking
 function findByRef(id) {
     let query = apiString + '/booking/' + id;
@@ -98,14 +115,18 @@ function findByRef(id) {
             $('.booking-form > .section-header > p').text('We found your booking record, ' + result.data.first + '. Feel free to change any of the fields below if you need to update it.');
             $('#submit-btn').text('Update booking');
             $('.booking-form > .section-footer > p').html('Want to start over? <a href="#" class="search-link">Go back</a>');
-            $('.search-link').click(() => {
-                $('.booking-form').hide();
-                $('.search-form').show();
-            });
-            $('#search-input').val('');
+            
+            // cancel link
+            $('.cancel-link').click(() => { cancelBooking(result.data.book_id) });
 
             $('.booking-form').show();
             $('.search-form').hide();
+
+            // re-init search link event handler
+            $('.search-link').click(() => {
+                $('.booking-form').hide();
+                $('.search-form').show();
+            }); $('#search-input').val('');            
         } else {
             // TODO: Use tooltip here
             // DEBUG: log if ID not found
@@ -128,6 +149,7 @@ function hideSpinner() {
 $(document).ready(() => {
     // hide booking form and success page
     $('.booking-form').hide();
+    $('.cancel-prompt').hide();
     $('.success-page').hide();
     $('.ajax-spinner').hide();
 
@@ -216,9 +238,16 @@ $(document).ready(() => {
         }
     });
 
+    // handle enter key on form
+    let formInp = $('.booking-form > .section-wrapper > input');
+    formInp.keypress((e) => {
+        if (e.keyCode == 13) {
+            submitBtn.click();
+        }
+    });
+
     // set up AJAX spinner element
     let opts = { lines: 9, length: 34, width: 6, radius: 24, scale: 1, corners: 0.2, color: '#000', opacity: 0.25, rotate: 0, direction: 1, speed: 0.8, trail: 25, fps: 20, zIndex: 2e9, className: 'spinner', top: '50%', left: '50%', shadow: false, hwaccel: true, position: 'absolute' }
     let target = $('.ajax-spinner');
-    let spinner = new Spinner(opts).spin();
-    target.append(spinner);
+    let spinner = new Spinner(opts).spin(target);
 });
