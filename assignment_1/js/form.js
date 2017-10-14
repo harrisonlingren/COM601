@@ -1,19 +1,31 @@
 /* 
 FOR THE PURPOSES OF THIS ASSIGNMENT, please consider the 
 API linked above to be a "blackbox" API with the 
-following behavior:
+following CRUD behavior:
 
-Retrieve booking record:
-- HTTP request:  'GET /api/booking/<book_id>' 
-    params: <book_id>, the ID of the record to search for
-- Response (JSON):
-    { 'message': <success/fail>, 'data': <found_data> }
+    Create booking record:
+    - HTTP request:  'POST /api/create'
+        params: form data as JSON object
+    - Response: 
+        { 'message': <success/fail>, 'data': <new_data> }
 
-Create booking record:
-- HTTP request:  'POST /api/create'
-    params: form data as JSON object
-- Response: 
-    { 'message': <success/fail>, 'data': <new_data> }
+    Retrieve booking record:
+    - HTTP request:  'GET /api/booking/<book_id>' 
+        params: <book_id>, the ID of the record to search for
+    - Response (JSON):
+        { 'message': <success/fail>, 'data': <found_data> }
+
+    Update booking record:
+    - HTTP request:  'PUT /api/booking/<book_id>'
+        params: form data as JSON object
+    - Response: 
+        { 'message': <success/fail>, 'data': <new_data> }
+
+    Delete booking record:
+    - HTTP request:  'DELETE /api/booking/<book_id>' 
+        params: <book_id>, the ID of the record to be deleted
+    - Response (JSON):
+        { 'message': <success/fail> }
 */
 
 // assignment code begins here
