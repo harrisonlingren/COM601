@@ -11,10 +11,12 @@ var sourcemaps = require('gulp-sourcemaps');
 gulp.task('scripts', function() {
     return gulp.src('src/js/*.js')
         .pipe(babel())
+        .pipe(sourcemaps.init())
         .pipe(concat('concat.js'))
         .pipe(rename('form.min.js'))
         .pipe(uglify())
-        .pipe(gulp.dest('dist/js'));
+        .pipe(sourcemaps.write())
+        .pipe(gulp.dest('dist'));
 });
 
 // Compile Sass
@@ -25,7 +27,7 @@ gulp.task('style', function() {
         .pipe(sourcemaps.init())
         .pipe(cleanCSS())
         .pipe(sourcemaps.write())
-        .pipe(gulp.dest('dist/css'));
+        .pipe(gulp.dest('dist'));
 });
 
 gulp.task('default', ['style', 'scripts']);
