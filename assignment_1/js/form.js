@@ -19,8 +19,7 @@ Create booking record:
 // assignment code begins here
 let apiString = 'https://com601-assign1.herokuapp.com/api';
 
-// AJAX for creating new bookings
-// TODO: handle updating booking
+// AJAX for creating and updating bookings
 function submitForm(booking, oldId) {
     // flag for updating or creating
     let updateFlag = (oldId == "") ? false : true;
@@ -58,16 +57,21 @@ function handleEditSuccess(result, status, resp) {
     console.log(result, status, resp.statusText, resp.status);
     if (resp.status == 201) {
         // process success page
+        $('.success-page > .section-header > h3').text('Thank you!');
         $('#booked-id').text('Your booking ID: ' + result.data.book_id)
         $('#booked-name').text('Registered name: ' + result.data.first + ' ' + result.data.last);
         $('#booked-email').text('Email address: ' + result.data.email);
+        $('.success-page > .section-wrapper > p').show();
 
         // set message if update
-        if ($('#found-id').val() != "") {
+        let id = $('#found-id').val();
+        if (id != "") {
             $('.success-page > .section-header > p').text("Your accomodations have been updated successfully. Check out the details below:");
             $('#found-id').val('');
+        } else {
+            $('.success-page > .section-header > p').text("Your accomodations have been booked successfully. Check out the details below:");
         }
-
+        
         $('.booking-form').hide();
         $('.success-page').show();
     } else {
@@ -86,14 +90,21 @@ function cancelBooking(id) {
     $.ajax({
         url: query,
         type: 'DELETE',
-        success: handleDeleteSuccess(id)
+        success: handleDeleteSuccess
     });
 }
 
 // handle AJAX DELETE success
-function handleDeleteSuccess(id) {
-    $('.success-page > .section-header > h3').text = 'Cancelled reservation';
-    $('.success-page > .section-header > p').text = "Your booking id ' + id + ' has been cancelled. We're sorry to see you go!";
+function handleDeleteSuccess() {
+    // set success page text
+    let id = $('#found-id').val();
+    $('.success-page > .section-header > h3').text('Cancelled reservation');
+    $('.success-page > .section-wrapper > p').hide();
+    $('.success-page > .section-header > p').text("Your booking (#" + id + ") has been cancelled. We're sorry to see you go!");
+    
+    // show success page
+    $('.booking-form').hide();
+    $('.success-page').show();
 }
 
 // AJAX for finding booking
@@ -119,6 +130,7 @@ function findByRef(id) {
             // cancel link
             $('.cancel-link').click(() => { cancelBooking(result.data.book_id) });
 
+            $('.cancel-prompt').show();
             $('.booking-form').show();
             $('.search-form').hide();
 
@@ -167,6 +179,7 @@ $(document).ready(() => {
         $('#email').val('');
         $('#search-input').val('');
         $('#found-id').val('');
+        $('.cancel-prompt').hide();
 
         // reset text
         $('#submit-btn').text('Reserve now');
