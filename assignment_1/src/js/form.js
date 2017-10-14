@@ -29,7 +29,7 @@ following CRUD behavior:
 */
 
 // assignment code begins here
-let apiString = 'https://com601-assign1.herokuapp.com/api';
+var apiString = 'https://com601-assign1.herokuapp.com/api';
 
 // AJAX for creating and updating bookings
 function submitForm(booking, oldId) {
