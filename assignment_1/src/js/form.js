@@ -1,31 +1,31 @@
 /* 
-FOR THE PURPOSES OF THIS ASSIGNMENT, please consider the 
-API linked above to be a "blackbox" API with the 
-following CRUD behavior:
+    FOR THE PURPOSES OF THIS ASSIGNMENT, please consider the 
+    API linked above to be a "blackbox" API with the 
+    following CRUD behavior:
 
-    Create booking record:
-    - HTTP request:  'POST /api/create'
-        params: form data as JSON object
-    - Response: 
-        { 'message': <success/fail>, 'data': <new_data> }
+        Create booking record:
+        - HTTP request:  'POST /api/create'
+            params: form data as JSON object
+        - Response: 
+            { 'message': <success/fail>, 'data': <new_data> }
 
-    Retrieve booking record:
-    - HTTP request:  'GET /api/booking/<book_id>' 
-        params: <book_id>, the ID of the record to search for
-    - Response (JSON):
-        { 'message': <success/fail>, 'data': <found_data> }
+        Retrieve booking record:
+        - HTTP request:  'GET /api/booking/<book_id>' 
+            params: <book_id>, the ID of the record to search for
+        - Response (JSON):
+            { 'message': <success/fail>, 'data': <found_data> }
 
-    Update booking record:
-    - HTTP request:  'PUT /api/booking/<book_id>'
-        params: form data as JSON object
-    - Response: 
-        { 'message': <success/fail>, 'data': <new_data> }
+        Update booking record:
+        - HTTP request:  'PUT /api/booking/<book_id>'
+            params: form data as JSON object
+        - Response: 
+            { 'message': <success/fail>, 'data': <new_data> }
 
-    Delete booking record:
-    - HTTP request:  'DELETE /api/booking/<book_id>' 
-        params: <book_id>, the ID of the record to be deleted
-    - Response (JSON):
-        { 'message': <success/fail> }
+        Delete booking record:
+        - HTTP request:  'DELETE /api/booking/<book_id>' 
+            params: <book_id>, the ID of the record to be deleted
+        - Response (JSON):
+            { 'message': <success/fail> }
 */
 
 // assignment code begins here
@@ -39,7 +39,10 @@ function submitForm(booking, oldId) {
     let postData = {
         'first': booking.first,
         'last': booking.last,
-        'email': booking.email
+        'email': booking.email,
+        'adults': booking.adults,
+        'children': booking.children,
+        'destination': booking.destination
     };
 
     let query = '';
@@ -74,6 +77,8 @@ function handleEditSuccess(result, status, resp) {
         $('#booked-id').text('Your booking ID: ' + result.data.book_id)
         $('#booked-name').text('Registered name: ' + result.data.first + ' ' + result.data.last);
         $('#booked-email').text('Email address: ' + result.data.email);
+        $('#booked-people').text(result.data.adults + ' adults and ' + result.data.children + ' children');
+        $('#booked-dest').text('Traveling to: ' + result.data.destination);
         $('.success-page > .section-wrapper > p').show();
 
         // set message if update
@@ -88,11 +93,9 @@ function handleEditSuccess(result, status, resp) {
         $('.booking-form').hide();
         $('.success-page').show();
     } else {
-        // error tooltips
+        // error message
         if ($('#errormsg').length == 0) {
             $('.booking-form .section-wrapper').append('<p id="errormsg">Looks like there was an error, %s %s! Try again.</p>', resp.status, resp.statusText);
-        } else {
-            // TODO: make this all better
         }
     }
 }
@@ -123,40 +126,50 @@ function handleDeleteSuccess() {
 
 // AJAX for finding booking
 function findByRef(id) {
+    showSpinner();
     let query = apiString + '/booking/' + id;
     // DEBUG: print AJAX query
     // console.log('querying: %s', query);
-    $.getJSON(query, (result) => {
-        // DEBUG: print result data
-        // console.log(result, result.data);
-        if (result.data) {
-            $('#firstname').val(result.data.first);
-            $('#lastname').val(result.data.last);
-            $('#email').val(result.data.email);
-            $('#found-id').val(result.data.book_id);
+    $.ajax({
+        url: query,
+        type: 'GET',
+        error: (result, status, resp) => {
+            hideSpinner();
+            // show tooltip here
+            $('#search-input').tooltip({content: 'Booking ' + id + ' not found!'});
+            console.error(id + ' not found!');
+        },
+        success: (result, status, resp) => {
+            // DEBUG: print result data
+            // console.log(result, result.data);
+            if (resp.status == 200) {
+                $('#firstname').val(result.data.first);
+                $('#lastname').val(result.data.last);
+                $('#email').val(result.data.email);
+                $('#adults').val(result.data.adults);
+                $('#children').val(result.data.children);
+                $('#destination').val(result.data.destination);
+                $('#found-id').val(result.data.book_id);
 
-            // change header text and button text
-            $('.booking-form > .section-header > h3').text('Update your booking')
-            $('.booking-form > .section-header > p').text('We found your booking record, ' + result.data.first + '. Feel free to change any of the fields below if you need to update it.');
-            $('#submit-btn').text('Update booking');
-            $('.booking-form > .section-footer > p').html('Want to start over? <a href="#" class="search-link">Go back</a>');
-            
-            // cancel link
-            $('.cancel-link').click(() => { cancelBooking(result.data.book_id) });
+                // change header text and button text
+                $('.booking-form > .section-header > h3').text('Update your booking')
+                $('.booking-form > .section-header > p').text('We found your booking record, ' + result.data.first + '. Feel free to change any of the fields below if you need to update it.');
+                $('#submit-btn').text('Update booking');
+                $('.booking-form > .section-footer > p').html('Want to start over? <a href="#" class="search-link">Go back</a>');
+                
+                // cancel link
+                $('.cancel-link').click(() => { cancelBooking(result.data.book_id) });
 
-            $('.cancel-prompt').show();
-            $('.booking-form').show();
-            $('.search-form').hide();
+                $('.cancel-prompt').show();
+                $('.booking-form').show();
+                $('.search-form').hide();
 
-            // re-init search link event handler
-            $('.search-link').click(() => {
-                $('.booking-form').hide();
-                $('.search-form').show();
-            }); $('#search-input').val('');            
-        } else {
-            // TODO: Use tooltip here
-            // DEBUG: log if ID not found
-            console.log('not found!');
+                // re-init search link event handler
+                $('.search-link').click(() => {
+                    $('.booking-form').hide();
+                    $('.search-form').show();
+                }); $('#search-input').val('');
+            } hideSpinner();
         }
     });
 }
@@ -164,12 +177,10 @@ function findByRef(id) {
 
 // AJAX loading spinners, powered by spin.js
 function showSpinner() {
-    console.info('showing spinner...');
     $('.spinner').show();
 }
 
 function hideSpinner() {
-    console.info('hiding spinner...');
     $('.spinner').hide();
 }
 
@@ -193,6 +204,9 @@ $(document).ready(() => {
         $('#firstname').val('');
         $('#lastname').val('');
         $('#email').val('');
+        $('#adults').val('');
+        $('#children').val('');
+        $('#destination').val(0);
         $('#search-input').val('');
         $('#found-id').val('');
         $('.cancel-prompt').hide();
@@ -214,30 +228,42 @@ $(document).ready(() => {
 
     // add click handler for submit button
     let submitBtn = $('#submit-btn');
+    submitBtn.tooltip();
     submitBtn.click(() => {
         // get form values and save to object
         let firstName = $('#firstname').val();
         let lastName = $('#lastname').val();
         let email = $('#email').val();
-        let newBooking = {
-            'first': firstName,
-            'last': lastName,
-            'email': email
-        };
-
+        let adults = $('#adults').val();
+        let children = $('#children').val();
+        let destination = $('#destination').val();
         // validate fields
-        if (!firstName || !lastName || !email) {
+        if (!firstName || !lastName || !email || !adults || !children || !destination) {
             // TODO: show tooltip, console.log for now
             // TODO: better email client validation
             // DEBUG: log if form incomplete
-            console.log("form values missing!");
+            submitBtn.attr('title', 'Please fill out all fields!');
+            submitBtn.tooltip('open');
         } else {
+            submitBtn.attr('title', '');
             // submit form with old ID, if found
             let oldId = $('#found-id').val();
+            let newBooking = {
+                'first': firstName,
+                'last': lastName,
+                'email': email,
+                'adults': adults,
+                'children': children,
+                'destination': destination
+            };
+
             console.log('booking: ' , newBooking, oldId);
             submitForm(newBooking, oldId);
         }        
     });
+
+    // spinners init
+    $('#adults,#children').spinner();
 
     // add click handler for search button
     let searchBtn = $('#search-btn');
@@ -246,7 +272,7 @@ $(document).ready(() => {
         // DEBUG: log if form incomplete
         let searchId = $('#search-input').val();
         if (!searchId) { console.log("search ID missing!", searchId); } 
-        else { showSpinner();  findByRef(searchId);  hideSpinner(); }
+        else { findByRef(searchId); }
     });
 
     // handle enter key on search
@@ -262,7 +288,7 @@ $(document).ready(() => {
     });
 
     // set up AJAX spinner element
-    let opts = { lines: 9, length: 34, width: 6, radius: 24, scale: 1, corners: 0.2, color: '#000', opacity: 0.25, rotate: 0, direction: 1, speed: 0.8, trail: 25, fps: 20, zIndex: 2e9, className: 'spinner', top: '50%', left: '50%', shadow: false, hwaccel: true, position: 'absolute' }
+    let opts = { lines: 11, length: 16, width: 6, radius: 16, scale: 1, corners: 0.2, color: '#000', opacity: 0.25, rotate: 0, direction: 1, speed: 0.8, trail: 25, fps: 20, zIndex: 2e9, className: 'spinner', top: '50%', left: '50%', shadow: false, hwaccel: true, position: 'absolute' }
     let target = $('.container');
     let s = new Spinner(opts).spin();
     target.append(s.el);

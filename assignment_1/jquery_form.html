@@ -5,27 +5,32 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Lingren Assignment 1</title>
+    <!-- fonts and main style -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    <link rel="stylesheet" href="dist/style.min.css" type="text/css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/spin.js/2.3.2/spin.min.js"></script>
+    <link href="src/js/libs/jqueryui/jquery-ui.min.css" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="src/css/style.css" type="text/css">
+    <!-- jquery / libs -->
+    <script src="src/js/libs/jquery/jquery.min.js"></script>
+    <script src="src/js/libs/jqueryui/jquery-ui.min.js"></script>
+    <script src="src/js/libs/spinjs/spin.min.js"></script>
+    <!-- main js -->
     <script src="src/js/form.js"></script>
 </head>
 <body>
     
     <div class="container">
         <header>
-            <h2>Accomdations booking</h2>
+            <h2>Easy Travel Co.</h2>
+            <hr>
         </header>
         <div class="search-form">
             <div class="section-header">
                 <h3>Lookup previous booking</h3>
-                <p>Type in your booking reference ID below to locate your booking</p>
             </div>
             <div class="section-wrapper">
                 <div class="search">
-                    <input type="text" class="search-input" id="search-input" placeholder="Type a booking ID...">
+                    <input type="text" class="search-input" id="search-input" placeholder="Search for a booking ID...">
                     <button type="submit" class="search-btn" id="search-btn"><i class="material-icons">search</i></button>
                 </div>
             </div>
@@ -40,9 +45,15 @@
                 <p>Fill out the fields below to book a new accomodation</p>
             </div>
             <div class="section-wrapper">
-                    <label for="firstname">First name:</label><input required type="text" name="firstname" id="firstname" placeholder="First..."><br>
+                    <label for="firstname">First name: </label><input required type="text" name="firstname" id="firstname" placeholder="First..."><br>
                     <label for="lastname">Last name: </label><input required type="text" name="lastname" id="lastname" placeholder="Last..."><br>
-                    <label for="email">Email:</label><input required type="email" name="email" id="email" placeholder="example@gmail.com..."><br><br>
+                    <label for="email">Email: </label><input required type="email" name="email" id="email" placeholder="example@gmail.com..."><br><br>
+                    <label for="adults"># of Adults: </label><input required id="adults" name="adults"><br>
+                    <label for="children"># of Children: </label><input required id="children" name="children"><br>
+                    <label for="destination">Destination: </label>
+                    <select name="destination" id="destination" placeholder="Select one...">
+                        <option>placeholder!</option>
+                    </select><br><br>
                     <button id="submit-btn">Reserve now</button>
                     <br><br>
                     <p class="cancel-prompt">Changed your mind? <a href="#" class="cancel-link">Click here to cancel your reservation</a>.</p>
@@ -61,6 +72,8 @@
                 <p id="booked-id"></p>
                 <p id="booked-name"></p>
                 <p id="booked-email"></p>
+                <p id="booked-people"></p>
+                <p id="booked-dest"></p>
             </div>
             <div class="section-footer">
                 <p>Want to book a new accomodation? <a href="#" class="booking-link">Let's start over!</a></p>
@@ -68,7 +81,10 @@
         </div>
     </div>
 
-    <input type="hidden" id="found-id" value=""/>
+    <footer>
+        &copy; 2017 <a href="http://lingren.io">Harrison Lingren</a>
+    </footer>
 
+    <input type="hidden" id="found-id" value=""/>
 </body>
 </html>
