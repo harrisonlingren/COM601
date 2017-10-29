@@ -1,0 +1,46 @@
+{"destinations": [
+    {
+        "region": "Europe",
+        "locations": [
+            "UK - London",
+            "UK - Belfast",
+            "Ireland - Dublin",
+            "France - Paris",
+            "Germany - Berlin",
+            "Italy - Rome",
+            "Spain - Madrid",
+            "Spain - Barcelona",
+            "Austria - Vienna",
+            "Switzerland - Zürich"
+        ]
+    },
+    {
+        "region": "North America",
+        "locations": [
+            "USA - Los Angeles",
+            "USA - New York",
+            "USA - Chicago",
+            "USA - San Francisco",
+            "USA - Miami",
+            "Mexico - Mexico City",
+            "Canada - Toronto",
+            "Canada - Vancouver",
+            "Canada - Ontario"
+        ]
+    },
+    {
+        "region": "Asia",
+        "locations": [
+            "Japan - Tokyo",
+            "China - Shanghai",
+            "China - Beijing",
+            "Thailand - Bangkok",
+            "Vietnam - Hanoi",
+            "China - Shenzen",
+            "Turkey - Istanbul",
+            "India - Mumbai",
+            "Pakistan - Karachi",
+            "India - New Delhi"
+        ]
+    }
+]}

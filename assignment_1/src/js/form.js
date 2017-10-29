@@ -1,6 +1,6 @@
 /* 
     FOR THE PURPOSES OF THIS ASSIGNMENT, please consider the 
-    API linked above to be a "blackbox" API with the 
+    REST API  to be a "blackbox" with the 
     following CRUD behavior:
 
         Create booking record:
@@ -28,10 +28,12 @@
             { 'message': <success/fail> }
 */
 
-// assignment code begins here
+// |---- assignment code begins here ----|
+
+// REST API base URL
 var apiString = 'https://com601-assign1.herokuapp.com/api';
 
-// AJAX for creating and updating bookings
+// AJAX method for creating and updating bookings
 function submitForm(booking, oldId) {
     // flag for updating or creating
     let updateFlag = (oldId == "") ? false : true;
@@ -54,14 +56,27 @@ function submitForm(booking, oldId) {
              url: query,
              type: 'PUT',
              data: postData,
-             success: handleEditSuccess
+             success: handleEditSuccess,
+             error: (result, status, resp) => {
+                 hideSpinner();
+                 console.error('Could not make changes', resp);
+             }
          });
     } else {
         // create new booking record
+        showSpinner();
         query = apiString + '/create';
-        $.post(query, postData, handleEditSuccess);
+        $.ajax({
+            url: query,
+            data: postData, 
+            type: 'POST',
+            success: handleEditSuccess,
+            error: (result, status, resp) => {
+                hideSpinner();
+                console.error('Could not create record!', resp);
+            }
+        });
     }
-    hideSpinner();
     // DEBUG: print AJAX query
     //console.log('querying: %s', query);
 }
@@ -70,6 +85,7 @@ function submitForm(booking, oldId) {
 function handleEditSuccess(result, status, resp) {
     // TODO: change this to display better
     // DEBUG: print AJAX result status and data
+    hideSpinner();
     console.log(result, status, resp.statusText, resp.status);
     if (resp.status == 201) {
         // process success page
@@ -107,12 +123,17 @@ function cancelBooking(id) {
     $.ajax({
         url: query,
         type: 'DELETE',
-        success: handleDeleteSuccess
-    }); hideSpinner();
+        success: handleDeleteSuccess,
+        error: (result, status, resp) => {
+            hideSpinner();
+            console.error('Could not delete record!');
+        }
+    });
 }
 
 // handle AJAX DELETE success
 function handleDeleteSuccess() {
+    hideSpinner();
     // set success page text
     let id = $('#found-id').val();
     $('.success-page > .section-header > h3').text('Cancelled reservation');
@@ -184,6 +205,8 @@ function hideSpinner() {
     $('.spinner').hide();
 }
 
+var d = {};
+
 // DOM manipulation after document is ready
 $(document).ready(() => {
     // hide booking form and success page
@@ -193,7 +216,7 @@ $(document).ready(() => {
     $('.spinner').hide();
 
     // switch view to search
-    $('.search-link').click(() => {
+    $('.search-link, header>h2').click(() => {
         $('.booking-form').hide();
         $('.search-form').show();
     });
@@ -286,6 +309,26 @@ $(document).ready(() => {
     formInp.keypress((e) => {
         if (e.keyCode == 13) { submitBtn.click(); }
     });
+
+
+    // load locations into selectmenu
+    // get available destination locations
+    let destMenu = $('#destination');
+    
+    $.getJSON('src/js/destinations.json', (data) => {
+        d = data;
+        // append each region as optgroup
+        $.each(data.destinations, (i, dest) => {
+            destMenu.append('<optgroup label="' + dest.region + '">\n');
+            // append each location to optgroup alphabetically
+            let loc = dest.locations; loc.sort();
+            $.each(loc, (j, location) => {
+                destMenu.append('<option value="' + location + '">' + location + '</option>');
+            });
+            destMenu.append('</optgroup>\n');
+        });
+    });
+
 
     // set up AJAX spinner element
     let opts = { lines: 11, length: 16, width: 6, radius: 16, scale: 1, corners: 0.2, color: '#000', opacity: 0.25, rotate: 0, direction: 1, speed: 0.8, trail: 25, fps: 20, zIndex: 2e9, className: 'spinner', top: '50%', left: '50%', shadow: false, hwaccel: true, position: 'absolute' }

@@ -5,9 +5,11 @@ body {
 }
 
 .container {
+    min-width: 450px;
+    max-width: 900px;
+    min-height: 200px;
     margin: 20px 25%;
     background-color: #fff;
-    height: 90%;
     padding: 10px 20px;
     border-radius: 5px;
 }
@@ -15,6 +17,7 @@ body {
 header h2 {
     margin-top: 10px;
     text-align: center;
+    cursor: pointer;
 }
 
 header hr {
@@ -76,7 +79,7 @@ label {
     float: left;
     clear: left;
     width: 20%;
-    padding-right: 20px;
+    padding: 8px;
     text-align: right;
     display: inline-block;
 }
@@ -106,7 +109,7 @@ label {
 .search-btn {
     position: relative;
     top: 0;
-    right: 36px;
+    right: 12px;
     width: 36px;
     height: 36px;
     border: 1px solid #263238;
