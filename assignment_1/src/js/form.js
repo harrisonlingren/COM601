@@ -82,11 +82,11 @@ function handleEditSuccess(result, status, resp) {
     if (resp.status == 201) {
         // process success page
         $('.success-page > .section-header > h3').text('Thank you!');
-        $('#booked-id').text('Your booking ID: ' + result.data.book_id)
-        $('#booked-name').text('Registered name: ' + result.data.first + ' ' + result.data.last);
-        $('#booked-email').text('Email address: ' + result.data.email);
-        $('#booked-people').text(result.data.adults + ' adults and ' + result.data.children + ' children');
-        $('#booked-dest').text('Traveling to: ' + result.data.destination);
+        $('#booked-id').html('<b>Your booking ID:</b> ' + result.data.book_id)
+        $('#booked-name').html('<b>Registered name:</b> ' + result.data.first + ' ' + result.data.last);
+        $('#booked-email').html('<b>Email address:</b> ' + result.data.email);
+        $('#booked-people').html(result.data.adults + ' adults and ' + result.data.children + ' children');
+        $('#booked-dest').html('<b>Traveling to:</b> ' + result.data.destination);
         $('.success-page > .section-wrapper > p').show();
 
         // set message if update
@@ -124,7 +124,7 @@ function cancelBooking(id) {
 }
 
 // handle AJAX DELETE success
-function handleDeleteSuccess() {
+function handleDeleteSuccess(result, status, resp) {
     hideSpinner();
     // set success page text
     let id = $('#found-id').val();
@@ -150,37 +150,40 @@ function findByRef(id) {
             // notify user of error
             showTooltip('.search', 'Reference ID #' + id + ' not found!');
         },
-        success: (result, status, resp) => {
-            if (resp.status == 200) {
-                $('#firstname').val(result.data.first);
-                $('#lastname').val(result.data.last);
-                $('#email').val(result.data.email);
-                $('#adults').val(result.data.adults);
-                $('#children').val(result.data.children);
-                $('#destination').val(result.data.destination);
-                $('#found-id').val(result.data.book_id);
-
-                // change header text and button text
-                $('.booking-form > .section-header > h3').text('Update your booking')
-                $('.booking-form > .section-header > p').text('We found your booking record, ' + result.data.first + '. Feel free to change any of the fields below if you need to update it.');
-                $('#submit-btn').text('Update booking');
-                $('.booking-form > .section-footer > p').html('Want to start over? <a href="#" class="search-link">Go back</a>');
-                
-                // cancel link
-                $('.cancel-link').click(() => { cancelBooking(result.data.book_id) });
-
-                $('.cancel-prompt').show();
-                $('.booking-form').show();
-                $('.search-form').hide();
-
-                // reset search link event handler
-                $('.search-link').click(() => {
-                    $('.booking-form').hide();
-                    $('.search-form').show();
-                }); $('#search-input').val('');
-            } hideSpinner();
-        }
+        success: handleSearchSuccess(result)
     });
+}
+
+function handleSearchSuccess(result, status, resp) {
+    if (resp.status == 200) {
+        $('#firstname').val(result.data.first);
+        $('#lastname').val(result.data.last);
+        $('#email').val(result.data.email);
+        $('#adults').val(result.data.adults);
+        $('#children').val(result.data.children);
+        $('#destination').val(result.data.destination);
+        $('#found-id').val(result.data.book_id);
+
+        // change header text and button text
+        $('.booking-form > .section-header > h3').text('Update your booking')
+        $('.booking-form > .section-header > p').text('We found your booking record, ' + result.data.first + '. Feel free to change any of the fields below if you need to update it.');
+        $('#submit-btn').text('Update booking');
+        $('.booking-form > .section-footer > p').html('Want to start over? <a href="#" class="search-link">Go back</a>');
+        
+        // cancel link
+        $('.cancel-link').click(() => { cancelBooking(result.data.book_id) });
+
+        $('.cancel-prompt').show();
+        $('.booking-form').show();
+        $('.search-form').hide();
+
+        // reset search link event handler
+        $('.search-link').click(() => {
+            $('.booking-form').hide();
+            $('.success-page').hide();
+            $('.search-form').show();
+        }); $('#search-input').val('');
+    } hideSpinner();
 }
 
 // AJAX loading spinner shortcuts, powered by spin.js.org
@@ -211,6 +214,21 @@ function removeTooltip(target) {
     $(target).tooltip('disable');
 }
 
+function buildLocationMenu(target) {
+    $.getJSON('src/js/destinations.json', (data) => {
+        // append each region as optgroup
+        $.each(data.destinations, (i, dest) => {
+            $(target).append('<optgroup label="' + dest.region + '"></optgroup>');
+            // append each location to new optgroup alphabetically
+            let loc = dest.locations; loc.sort();
+            let newGrp = $('optgroup[label="' + dest.region + '"]');
+            $.each(loc, (j, location) => {
+                newGrp.append('<option value="' + location + '">' + location + '</option>');
+            });
+        });
+    });
+}
+
 // DOM manipulation after document is ready
 $(document).ready(() => {
     // hide booking form and success page
@@ -222,6 +240,7 @@ $(document).ready(() => {
     // switch view to search
     $('.search-link, header>h2').click(() => {
         $('.booking-form').hide();
+        $('.success-page').hide();
         $('.search-form').show();
     });
 
@@ -313,20 +332,7 @@ $(document).ready(() => {
     });
 
     // load locations into selectmenu
-    let destMenu = $('#destination');
-    $.getJSON('src/js/destinations.json', (data) => {
-        // append each region as optgroup
-        $.each(data.destinations, (i, dest) => {
-            destMenu.append('<optgroup label="' + dest.region + '"></optgroup>');
-            // append each location to new optgroup alphabetically
-            let loc = dest.locations; loc.sort();
-            let newGrp = $('optgroup[label="' + dest.region + '"]');
-            $.each(loc, (j, location) => {
-                newGrp.append('<option value="' + location + '">' + location + '</option>');
-            });
-        });
-    });
-
+    buildLocationMenu( '#destination' );
 
     // configure AJAX loading spinner element
     let opts = { lines: 11, length: 16, width: 6, radius: 16, scale: 1, corners: 0.2, color: '#000', opacity: 0.25, rotate: 0, direction: 1, speed: 0.8, trail: 25, fps: 20, zIndex: 2e9, className: 'spinner', top: '50%', left: '50%', shadow: false, hwaccel: true, position: 'absolute' }
