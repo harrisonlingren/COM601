@@ -334,6 +334,12 @@ $(document).ready(() => {
     // load locations into selectmenu
     buildLocationMenu( '#destination' );
 
+    $('footer').after(
+        '<div class="terms">This website uses cookies to ensure you get the best experience on our website. <a href="http://cookiesandyou.com/">Learn more</a><span class="dismiss-btn">Got it!</span></div>'
+    );
+
+    $('.terms .dismiss-btn').click(() => { $('.terms').fadeOut(200); });
+
     // configure AJAX loading spinner element
     let opts = { lines: 11, length: 16, width: 6, radius: 16, scale: 1, corners: 0.2, color: '#000', opacity: 0.25, rotate: 0, direction: 1, speed: 0.8, trail: 25, fps: 20, zIndex: 2e9, className: 'spinner', top: '50%', left: '50%', shadow: false, hwaccel: true, position: 'absolute' }
     let target = $('.container');
