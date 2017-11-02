@@ -145,12 +145,12 @@ function findByRef(id) {
     $.ajax({
         url: query,
         type: 'GET',
+        success: handleSearchSuccess,
         error: (result, status, resp) => {
             hideSpinner();
             // notify user of error
             showTooltip('.search', 'Reference ID #' + id + ' not found!');
         },
-        success: handleSearchSuccess(result)
     });
 }
 
